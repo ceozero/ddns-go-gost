@@ -32,4 +32,4 @@ ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["/bin/sh", "-c", "/app/ddns-go -l :9876 -f 300 & /app/gost -C /root/gost.json & /app/realm -c /root/realm.toml"]
 
 
-#docker build -t ddns-go-gost .
+#docker build -t ddns-gost-realm .
