@@ -2,7 +2,7 @@
 FROM alpine:3.20
 
 # Install necessary packages
-RUN apk add --no-cache iptables curl ca-certificates tzdata && \
+RUN apk add --no-cache iptables curl ca-certificates tzdata tini && \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone
 
@@ -18,9 +18,18 @@ RUN curl -L -o /app/gost.tar.gz https://github.com/ginuerzh/gost/releases/downlo
     tar -xzf /app/gost.tar.gz -C /app && \
     chmod +x /app/gost
 
+# Download and extract realm binary
+RUN curl -L -o /app/realm.tar.gz https://github.com/zhboner/realm/releases/download/v2.6.3/realm-x86_64-unknown-linux-musl.tar.gz && \
+    tar -xzf /app/realm.tar.gz -C /app && \
+    chmod +x /app/realm
+
 # Expose ports for applications as needed
 EXPOSE 9876
 
-# Define entrypoints and default commands
-ENTRYPOINT ["/bin/sh", "-c"]
-CMD ["/app/ddns-go -l :9876 -f 300 & /app/gost -C /root/config.json"]
+# Define entrypoints and default commands using Tini as init system
+ENTRYPOINT ["/sbin/tini", "--"]
+
+CMD ["/bin/sh", "-c", "/app/ddns-go -l :9876 -f 300 & /app/gost -C /root/gost.json & /app/realm -c /root/realm.toml"]
+
+
+#docker build -t ddns-go-gost .
