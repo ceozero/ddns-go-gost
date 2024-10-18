@@ -1,7 +1,7 @@
 services:
-    ddns-go-gost:
-      image: ddns-go-gost:v1.0
-      container_name: ddns-go-gost
+    ddns-gost-realm:
+      image: ddns-gost-realm:latest
+      container_name: ddns-gost-realm
       restart: always
       ports:
         - 9876:9876
