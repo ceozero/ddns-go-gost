@@ -1,0 +1,11 @@
+services:
+    ddns-go-gost:
+      image: ddns-go-gost:v1.0
+      container_name: ddns-go-gost
+      restart: always
+      ports:
+        - 9876:9876
+        - 8890:8890
+      volumes:
+        - ./data:/root
+      network_mode: bridge
